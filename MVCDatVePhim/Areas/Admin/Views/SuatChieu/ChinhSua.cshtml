@@ -1,0 +1,71 @@
+@model MVCDatVePhim.ViewModels.Admin.AdminSuatChieuFormViewModel
+@{
+    ViewData["Title"] = "Chỉnh Sửa Suất Chiếu";
+    ViewData["BreadcrumbParent"] = "Suất Chiếu";
+}
+
+<div class="admin-page-header">
+    <h1 class="admin-page-title">Chỉnh Sửa Suất Chiếu</h1>
+    <a class="btn-admin-secondary" asp-area="Admin" asp-controller="SuatChieu" asp-action="Index">
+        <i class="bi bi-arrow-left me-1"></i> Quay Lại
+    </a>
+</div>
+
+<div class="admin-card" style="max-width:600px">
+    <form asp-action="ChinhSua" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="alert-cine mb-3"></div>
+
+        <div class="row g-3">
+            <div class="col-12">
+                <label asp-for="PhimId" class="admin-form-label">Phim</label>
+                <select asp-for="PhimId" class="form-select admin-form-select"
+                        asp-items="@Model.DanhSachPhim">
+                    <option value="">-- Chọn phim --</option>
+                </select>
+                <span asp-validation-for="PhimId" class="text-danger" style="font-size:.8rem"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="PhongChieuId" class="admin-form-label">Phòng Chiếu</label>
+                <select asp-for="PhongChieuId" class="form-select admin-form-select"
+                        asp-items="@Model.DanhSachPhong">
+                    <option value="">-- Chọn phòng chiếu --</option>
+                </select>
+                <span asp-validation-for="PhongChieuId" class="text-danger" style="font-size:.8rem"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="ThoiGianBatDau" class="admin-form-label">Thời Gian Bắt Đầu</label>
+                <input asp-for="ThoiGianBatDau" type="datetime-local" class="form-control admin-form-control" />
+                <span asp-validation-for="ThoiGianBatDau" class="text-danger" style="font-size:.8rem"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="ThoiGianKetThuc" class="admin-form-label">Thời Gian Kết Thúc</label>
+                <input asp-for="ThoiGianKetThuc" type="datetime-local" class="form-control admin-form-control" />
+                <span asp-validation-for="ThoiGianKetThuc" class="text-danger" style="font-size:.8rem"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="GiaVe" class="admin-form-label">Giá Vé Cơ Bản (VNĐ)</label>
+                <input asp-for="GiaVe" class="form-control admin-form-control" placeholder="VD: 90000" />
+                <span asp-validation-for="GiaVe" class="text-danger" style="font-size:.8rem"></span>
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+                <div class="form-check mb-0">
+                    <input asp-for="DangHoatDong" class="form-check-input" />
+                    <label asp-for="DangHoatDong" class="form-check-label admin-form-label">Hoạt Động / Bán Vé</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn-admin-primary">
+                <i class="bi bi-save me-1"></i> Lưu Thay Đổi
+            </button>
+            <a asp-area="Admin" asp-controller="SuatChieu" asp-action="Index" class="btn-admin-secondary ms-2">Huỷ</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,89 @@
+@model List<MVCDatVePhim.Models.Phim>
+@{
+    ViewData["Title"] = "Danh Sách Phim";
+    var tuKhoa  = ViewBag.TuKhoa  as string;
+    var theLoai = ViewBag.TheLoai as string;
+}
+
+<div class="container" style="padding-top:2.5rem; padding-bottom:3rem">
+
+    <div class="section-title">Tất Cả Phim</div>
+
+    <!-- ── Bộ Lọc ─────────────────────────────────────── -->
+    <form asp-controller="Phim" asp-action="Index" method="get"
+          class="cine-card mb-4">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label text-muted-cine small fw-semibold">TÌM KIẾM</label>
+                <input type="text" name="tuKhoa" value="@tuKhoa"
+                       class="form-control form-control-cine"
+                       placeholder="Tên phim, đạo diễn..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-muted-cine small fw-semibold">THỂ LOẠI</label>
+                <select name="theLoai" class="form-select form-select-cine">
+                    <option value="">-- Tất cả thể loại --</option>
+                    @foreach (var tl in Enum.GetValues<MVCDatVePhim.Models.TheLoaiPhim>())
+                    {
+                        <option value="@tl" selected="@(tl.ToString() == theLoai)">
+                            @tl.GetDisplayName()
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-muted-cine small fw-semibold">NGÀY CHIẾU LỌC NHANH</label>
+                <input type="date" name="ngayChieu" value="@ViewBag.NgayChieu"
+                       class="form-control form-control-cine" />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn-cine w-100">
+                    <i class="bi bi-funnel"></i> Lọc Phim
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <!-- ── Kết Quả ─────────────────────────────────────── -->
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-film" style="font-size:4rem; color:#2a2a40; display:block; margin-bottom:1rem"></i>
+            <p class="text-muted-cine">Không tìm thấy phim nào phù hợp.</p>
+            <a class="btn-outline-cine" asp-controller="Phim" asp-action="Index">Xem Tất Cả</a>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted-cine small mb-3">Tìm thấy <strong>@Model.Count</strong> bộ phim</p>
+        <div class="row g-3">
+            @foreach (var phim in Model)
+            {
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <a asp-controller="Phim" asp-action="ChiTiet" asp-route-id="@phim.Id"
+                       class="text-decoration-none d-block h-100">
+                        <div class="movie-card">
+                            <img class="movie-card-img"
+                                 src="@(string.IsNullOrEmpty(phim.UrlAnh) ? "https://via.placeholder.com/200x300/1a1a2e/555?text=Poster" : phim.UrlAnh)"
+                                 alt="@phim.TenPhim" loading="lazy" />
+                            <div class="movie-card-body">
+                                <div class="movie-card-title">@phim.TenPhim</div>
+                                <div class="movie-card-meta">
+                                    <span>@phim.ThoiLuong phút</span>
+                                    <span class="rating-badge">⭐ @phim.DanhGia.ToString("F1")</span>
+                                </div>
+                                <div style="font-size:.75rem; color:#9e9e9e; margin-top:.3rem">
+                                    @phim.TheLoai.GetDisplayName()
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@functions {
+    // Helper to get display name from enum
+}

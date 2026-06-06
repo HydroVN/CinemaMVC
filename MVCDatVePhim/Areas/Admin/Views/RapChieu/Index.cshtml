@@ -1,0 +1,80 @@
+@model List<MVCDatVePhim.Models.RapChieu>
+@{
+    ViewData["Title"] = "Quản Lý Rạp Chiếu";
+    ViewData["BreadcrumbParent"] = "Nội Dung";
+}
+
+<div class="admin-page-header">
+    <h1 class="admin-page-title">Quản Lý Rạp Chiếu</h1>
+    <a class="btn-admin-primary" asp-area="Admin" asp-controller="RapChieu" asp-action="TaoMoi">
+        <i class="bi bi-plus-circle me-1"></i> Thêm Rạp Mới
+    </a>
+</div>
+
+<div class="admin-card">
+    <table class="table admin-table mb-0">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Tên Rạp</th>
+                <th>Địa Chỉ</th>
+                <th>Thành Phố</th>
+                <th>Số Điện Thoại</th>
+                <th>Số Phòng</th>
+                <th>Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var rap in Model)
+            {
+                var confirmMsg = $"Xoá rạp \"{rap.TenRap}\"? Lưu ý: Thao tác này có thể ảnh hưởng đến phòng chiếu và suất chiếu của rạp này!";
+                <tr>
+                    <td>@rap.Id</td>
+                    <td style="font-weight: 600; color: var(--admin-text);">@rap.TenRap</td>
+                    <td>@rap.DiaChi</td>
+                    <td>@rap.ThanhPho</td>
+                    <td>@(rap.SoDienThoai ?? "Chưa cấu hình")</td>
+                    <td>
+                        <span class="badge bg-secondary" style="font-size: 0.8rem;">
+                            @rap.DanhSachPhong.Count phòng
+                        </span>
+                    </td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a class="btn btn-sm"
+                               style="background: rgba(129, 199, 132, 0.1); color: #81c784; border: 1px solid rgba(129, 199, 132, 0.2);"
+                               asp-area="Admin" asp-controller="RapChieu" asp-action="PhongChieu"
+                               asp-route-rapId="@rap.Id" title="Quản lý phòng chiếu">
+                                <i class="bi bi-door-open me-1"></i> Phòng
+                            </a>
+                            <a class="btn btn-sm"
+                               style="background: rgba(79, 195, 247, 0.1); color: #4fc3f7; border: 1px solid rgba(79, 195, 247, 0.2);"
+                               asp-area="Admin" asp-controller="RapChieu" asp-action="ChinhSua"
+                               asp-route-id="@rap.Id" title="Chỉnh sửa rạp">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form asp-area="Admin" asp-controller="RapChieu" asp-action="Xoa"
+                                  asp-route-id="@rap.Id" method="post"
+                                  onsubmit="@($"return confirm('{confirmMsg}')")"
+                                  style="display: inline;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm"
+                                        style="background: rgba(229, 9, 20, 0.1); color: #e57373; border: 1px solid rgba(229, 9, 20, 0.2);"
+                                        title="Xoá rạp">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <div class="text-center py-4" style="color: var(--admin-muted);">
+            <i class="bi bi-building" style="font-size: 2.5rem; display: block; margin-bottom: .5rem;"></i>
+            Chưa có rạp chiếu nào. <a asp-area="Admin" asp-controller="RapChieu" asp-action="TaoMoi" style="color: var(--admin-accent); font-weight: 500;">Thêm ngay</a>
+        </div>
+    }
+</div>

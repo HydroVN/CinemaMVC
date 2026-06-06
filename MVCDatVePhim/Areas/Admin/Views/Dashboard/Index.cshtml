@@ -1,0 +1,109 @@
+@model MVCDatVePhim.ViewModels.Admin.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Tổng Quan";
+}
+
+<!-- Stat Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-red"><i class="bi bi-film"></i></div>
+            <div>
+                <div class="stat-value">@Model.TongPhim</div>
+                <div class="stat-label">Tổng Số Phim</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-gold"><i class="bi bi-ticket-perforated"></i></div>
+            <div>
+                <div class="stat-value">@Model.VeHomNay</div>
+                <div class="stat-label">Vé Bán Hôm Nay</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-green"><i class="bi bi-currency-dollar"></i></div>
+            <div>
+                <div class="stat-value" style="font-size:1.25rem">
+                    @Model.DoanhThuThangNay.ToString("N0")
+                </div>
+                <div class="stat-label">Doanh Thu Tháng (VNĐ)</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-blue"><i class="bi bi-people"></i></div>
+            <div>
+                <div class="stat-value">@Model.TongNguoiDung</div>
+                <div class="stat-label">Người Dùng</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="admin-card">
+            <div class="admin-page-header" style="margin-bottom:1rem">
+                <h2 class="admin-page-title" style="font-size:1.05rem">Vé Đặt Gần Đây</h2>
+                <a class="btn-admin-secondary btn-sm"
+                   asp-area="Admin" asp-controller="Ve" asp-action="Index">
+                    Xem Tất Cả
+                </a>
+            </div>
+            <table class="table admin-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Mã Vé</th>
+                        <th>Phim</th>
+                        <th>Khách Hàng</th>
+                        <th>Tổng Tiền</th>
+                        <th>Trạng Thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ve in Model.VeGanDay)
+                    {
+                        var (bc, bt) = ve.TrangThai switch
+                        {
+                            TrangThaiDatVe.DaXacNhan => ("badge-xacnhan", "Đã Xác Nhận"),
+                            TrangThaiDatVe.DaHuy     => ("badge-huy",     "Đã Huỷ"),
+                            _                        => ("badge-cho",     "Chờ Duyệt"),
+                        };
+                        <tr>
+                            <td><code style="color:#4fc3f7; font-size:.8rem">@ve.MaVe</code></td>
+                            <td>@ve.SuatChieu?.Phim?.TenPhim</td>
+                            <td>@ve.User?.HoTen</td>
+                            <td style="color:#f5c518">@ve.TongTien.ToString("N0") ₫</td>
+                            <td><span class="badge @bc">@bt</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="admin-card">
+            <h2 class="admin-page-title" style="font-size:1.05rem; margin-bottom:1.25rem">
+                Thao Tác Nhanh
+            </h2>
+            <div class="d-flex flex-column gap-2">
+                <a class="btn-admin-primary" asp-area="Admin" asp-controller="Phim" asp-action="TaoMoi">
+                    <i class="bi bi-plus-circle me-2"></i>Thêm Phim Mới
+                </a>
+                <a class="btn-admin-secondary" asp-area="Admin" asp-controller="SuatChieu" asp-action="TaoMoi">
+                    <i class="bi bi-calendar-plus me-2"></i>Thêm Suất Chiếu
+                </a>
+                <a class="btn-admin-secondary" asp-area="Admin" asp-controller="RapChieu" asp-action="Index">
+                    <i class="bi bi-building-add me-2"></i>Quản Lý Rạp
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

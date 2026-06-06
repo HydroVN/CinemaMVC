@@ -1,0 +1,64 @@
+@model List<MVCDatVePhim.Models.PhongChieu>
+@{
+    var rap = ViewBag.Rap as MVCDatVePhim.Models.RapChieu;
+    ViewData["Title"] = $"Phòng Chiếu — {rap?.TenRap}";
+    ViewData["BreadcrumbParent"] = "Rạp Chiếu";
+}
+
+<div class="admin-page-header">
+    <div>
+        <h1 class="admin-page-title">Quản Lý Phòng Chiếu</h1>
+        <p class="text-muted mb-0" style="font-size: .9rem;">Rạp: <strong style="color: var(--admin-text);">@rap?.TenRap</strong> | Địa chỉ: @rap?.DiaChi</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a class="btn-admin-secondary" asp-area="Admin" asp-controller="RapChieu" asp-action="Index">
+            <i class="bi bi-arrow-left me-1"></i> Danh Sách Rạp
+        </a>
+        <a class="btn-admin-primary" asp-area="Admin" asp-controller="RapChieu" asp-action="ThemPhong" asp-route-rapId="@rap?.Id">
+            <i class="bi bi-plus-circle me-1"></i> Thêm Phòng Mới
+        </a>
+    </div>
+</div>
+
+<div class="admin-card">
+    <table class="table admin-table mb-0">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Tên Phòng</th>
+                <th>Số Hàng Ghế</th>
+                <th>Số Ghế/Hàng</th>
+                <th>Tổng Số Ghế</th>
+                <th>Loại Ghế Tự Động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var phong in Model)
+            {
+                <tr>
+                    <td>@phong.Id</td>
+                    <td style="font-weight: 600; color: var(--admin-text);">@phong.TenPhong</td>
+                    <td>@phong.SoHang</td>
+                    <td>@phong.SoCot</td>
+                    <td>
+                        <span class="badge bg-danger" style="font-size: 0.8rem; background-color: rgba(229, 9, 20, 0.2) !important; color: #ff8a80; border: 1px solid rgba(229, 9, 20, 0.3);">
+                            @phong.TongSoGhe ghế
+                        </span>
+                    </td>
+                    <td>
+                        <span class="text-muted" style="font-size: 0.82rem;">
+                            Hàng A đến @((char)('A' + phong.SoHang - 3)) là Thường, 2 hàng cuối là VIP
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <div class="text-center py-4" style="color: var(--admin-muted);">
+            <i class="bi bi-door-closed" style="font-size: 2.5rem; display: block; margin-bottom: .5rem;"></i>
+            Rạp này chưa có phòng chiếu nào. <a asp-area="Admin" asp-controller="RapChieu" asp-action="ThemPhong" asp-route-rapId="@rap?.Id" style="color: var(--admin-accent); font-weight: 500;">Thêm phòng ngay</a>
+        </div>
+    }
+</div>

@@ -1,0 +1,72 @@
+@model List<MVCDatVePhim.Models.DatVe>
+@{
+    ViewData["Title"] = "Quản Lý Vé";
+    ViewData["BreadcrumbParent"] = "Giao Dịch";
+}
+
+<div class="admin-page-header">
+    <h1 class="admin-page-title">Quản Lý Vé Đặt</h1>
+    <span style="font-size:.85rem; color:#7a7a9a">Tổng: @Model.Count vé</span>
+</div>
+
+<div class="admin-card">
+    <table class="table admin-table mb-0">
+        <thead>
+            <tr>
+                <th>Mã Vé</th>
+                <th>Khách Hàng</th>
+                <th>Phim</th>
+                <th>Suất Chiếu</th>
+                <th>Tổng Tiền</th>
+                <th>Ngày Đặt</th>
+                <th>Trạng Thái</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ve in Model)
+            {
+                var (bc, bt) = ve.TrangThai switch
+                {
+                    MVCDatVePhim.Models.TrangThaiDatVe.DaXacNhan => ("badge-xacnhan", "Đã Xác Nhận"),
+                    MVCDatVePhim.Models.TrangThaiDatVe.DaHuy     => ("badge-huy",     "Đã Huỷ"),
+                    _                                             => ("badge-cho",     "Chờ Duyệt"),
+                };
+                <tr>
+                    <td><code style="color:#4fc3f7; font-size:.78rem">@ve.MaVe</code></td>
+                    <td style="font-size:.85rem">
+                        <div style="font-weight:600">@ve.User?.HoTen</div>
+                        <div style="color:#7a7a9a">@ve.User?.Email</div>
+                    </td>
+                    <td style="font-weight:600; max-width:150px; font-size:.85rem">
+                        @ve.SuatChieu?.Phim?.TenPhim
+                    </td>
+                    <td style="font-size:.82rem">
+                        @ve.SuatChieu?.ThoiGianBatDau.ToString("dd/MM HH:mm")
+                    </td>
+                    <td style="color:#f5c518; font-weight:700">
+                        @ve.TongTien.ToString("N0") ₫
+                    </td>
+                    <td style="font-size:.82rem; color:#7a7a9a">
+                        @ve.NgayDat.ToString("dd/MM/yyyy HH:mm")
+                    </td>
+                    <td><span class="badge @bc">@bt</span></td>
+                    <td>
+                        <a class="btn btn-sm"
+                           style="background:rgba(79,195,247,.1); color:#4fc3f7; border-color:rgba(79,195,247,.2); font-size:.8rem"
+                           asp-area="Admin" asp-controller="Ve" asp-action="ChiTiet" asp-route-id="@ve.Id">
+                            Chi Tiết
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <div class="text-center py-4" style="color:#7a7a9a">
+            <i class="bi bi-ticket-x" style="font-size:2.5rem; display:block; margin-bottom:.5rem"></i>
+            Chưa có vé nào được đặt.
+        </div>
+    }
+</div>

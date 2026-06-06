@@ -1,0 +1,59 @@
+@model MVCDatVePhim.Models.PhongChieu
+@{
+    var rapId = ViewBag.RapId;
+    ViewData["Title"] = "Thêm Phòng Chiếu";
+    ViewData["BreadcrumbParent"] = "Phòng Chiếu";
+}
+
+<div class="admin-page-header">
+    <h1 class="admin-page-title">Thêm Phòng Chiếu Mới</h1>
+    <a class="btn-admin-secondary" asp-area="Admin" asp-controller="RapChieu" asp-action="PhongChieu" asp-route-rapId="@rapId">
+        <i class="bi bi-arrow-left me-1"></i> Quay Lại
+    </a>
+</div>
+
+<div class="admin-card" style="max-width: 600px;">
+    <form asp-action="ThemPhong" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="RapChieuId" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="background: rgba(229, 9, 20, 0.12); border: 1px solid rgba(229, 9, 20, 0.3); color: #e57373; border-radius: 10px; font-size: .88rem;"></div>
+
+        <div class="row g-3">
+            <div class="col-12">
+                <label asp-for="TenPhong" class="admin-form-label">Tên Phòng Chiếu</label>
+                <input asp-for="TenPhong" class="form-control admin-form-control" placeholder="VD: Phòng 01, IMAX, Deluxe..." />
+                <span asp-validation-for="TenPhong" class="text-danger" style="font-size: .8rem;"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="SoHang" class="admin-form-label">Số Hàng Ghế (Từ A đến Z)</label>
+                <input asp-for="SoHang" type="number" class="form-control admin-form-control" min="1" max="26" />
+                <span asp-validation-for="SoHang" class="text-danger" style="font-size: .8rem;"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="SoCot" class="admin-form-label">Số Cột Ghế (Số ghế mỗi hàng)</label>
+                <input asp-for="SoCot" type="number" class="form-control admin-form-control" min="1" max="20" />
+                <span asp-validation-for="SoCot" class="text-danger" style="font-size: .8rem;"></span>
+            </div>
+
+            <div class="col-12">
+                <div class="alert alert-info border-0 mb-0" style="background: rgba(79, 195, 247, 0.12); color: #81d4fa; border-radius: 8px; font-size: .82rem;">
+                    <i class="bi bi-info-circle me-1"></i>
+                    <strong>Gợi ý:</strong> Hệ thống sẽ tự động tạo sơ đồ ghế sau khi thêm phòng chiếu. Theo cấu hình, 2 hàng cuối cùng của phòng chiếu sẽ tự động được set làm ghế <strong>VIP</strong> (giá vé cao hơn), các hàng còn lại là ghế <strong>Thường</strong>.
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn-admin-primary">
+                <i class="bi bi-plus-circle me-1"></i> Tạo Phòng Chiếu
+            </button>
+            <a asp-area="Admin" asp-controller="RapChieu" asp-action="PhongChieu" asp-route-rapId="@rapId" class="btn-admin-secondary ms-2">Huỷ</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

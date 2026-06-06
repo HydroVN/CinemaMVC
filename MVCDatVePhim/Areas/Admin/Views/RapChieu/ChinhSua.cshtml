@@ -1,0 +1,57 @@
+@model MVCDatVePhim.Models.RapChieu
+@{
+    ViewData["Title"] = "Chỉnh Sửa Rạp Chiếu";
+    ViewData["BreadcrumbParent"] = "Rạp Chiếu";
+}
+
+<div class="admin-page-header">
+    <h1 class="admin-page-title">Chỉnh Sửa Rạp Chiếu</h1>
+    <a class="btn-admin-secondary" asp-area="Admin" asp-controller="RapChieu" asp-action="Index">
+        <i class="bi bi-arrow-left me-1"></i> Quay Lại
+    </a>
+</div>
+
+<div class="admin-card" style="max-width: 600px;">
+    <form asp-action="ChinhSua" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="background: rgba(229, 9, 20, 0.12); border: 1px solid rgba(229, 9, 20, 0.3); color: #e57373; border-radius: 10px; font-size: .88rem;"></div>
+
+        <div class="row g-3">
+            <div class="col-12">
+                <label asp-for="TenRap" class="admin-form-label">Tên Rạp Chiếu</label>
+                <input asp-for="TenRap" class="form-control admin-form-control" placeholder="VD: CineViet Nguyễn Du" />
+                <span asp-validation-for="TenRap" class="text-danger" style="font-size: .8rem;"></span>
+            </div>
+            
+            <div class="col-12">
+                <label asp-for="DiaChi" class="admin-form-label">Địa Chỉ</label>
+                <input asp-for="DiaChi" class="form-control admin-form-control" placeholder="VD: 116 Nguyễn Du, Phường Bến Thành, Quận 1" />
+                <span asp-validation-for="DiaChi" class="text-danger" style="font-size: .8rem;"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="ThanhPho" class="admin-form-label">Thành Phố</label>
+                <input asp-for="ThanhPho" class="form-control admin-form-control" placeholder="VD: Hồ Chí Minh" />
+                <span asp-validation-for="ThanhPho" class="text-danger" style="font-size: .8rem;"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="SoDienThoai" class="admin-form-label">Số Điện Thoại</label>
+                <input asp-for="SoDienThoai" class="form-control admin-form-control" placeholder="VD: 0281234567" />
+                <span asp-validation-for="SoDienThoai" class="text-danger" style="font-size: .8rem;"></span>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn-admin-primary">
+                <i class="bi bi-save me-1"></i> Lưu Thay Đổi
+            </button>
+            <a asp-area="Admin" asp-controller="RapChieu" asp-action="Index" class="btn-admin-secondary ms-2">Huỷ</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

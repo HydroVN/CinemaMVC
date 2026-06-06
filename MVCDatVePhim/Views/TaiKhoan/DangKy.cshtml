@@ -1,0 +1,70 @@
+@model MVCDatVePhim.ViewModels.DangKyViewModel
+@{
+    ViewData["Title"] = "Đăng Ký";
+}
+
+<div style="min-height:80vh; display:flex; align-items:center; justify-content:center; padding:2rem">
+    <div style="width:100%; max-width:440px">
+
+        <div class="text-center mb-4">
+            <div style="font-size:2rem; font-weight:800; color:#e50914; margin-bottom:.25rem">🎬 CineViet</div>
+            <h1 style="font-size:1.5rem; font-weight:700">Đăng Ký Tài Khoản</h1>
+            <p class="text-muted-cine small">Tạo tài khoản miễn phí và bắt đầu đặt vé ngay!</p>
+        </div>
+
+        <div class="cine-card">
+            <form asp-action="DangKy" method="post">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="alert-cine mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="HoTen" class="form-label" style="font-size:.85rem; font-weight:600; color:#9e9e9e">HỌ VÀ TÊN</label>
+                    <input asp-for="HoTen" class="form-control form-control-cine" placeholder="Nguyễn Văn A" />
+                    <span asp-validation-for="HoTen" class="text-danger" style="font-size:.8rem"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label" style="font-size:.85rem; font-weight:600; color:#9e9e9e">EMAIL</label>
+                    <input asp-for="Email" class="form-control form-control-cine" placeholder="ten@example.com" />
+                    <span asp-validation-for="Email" class="text-danger" style="font-size:.8rem"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="SoDienThoai" class="form-label" style="font-size:.85rem; font-weight:600; color:#9e9e9e">SỐ ĐIỆN THOẠI</label>
+                    <input asp-for="SoDienThoai" class="form-control form-control-cine" placeholder="09x xxxxxxx" />
+                    <span asp-validation-for="SoDienThoai" class="text-danger" style="font-size:.8rem"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="MatKhau" class="form-label" style="font-size:.85rem; font-weight:600; color:#9e9e9e">MẬT KHẨU</label>
+                    <input asp-for="MatKhau" class="form-control form-control-cine" placeholder="Ít nhất 6 ký tự" />
+                    <span asp-validation-for="MatKhau" class="text-danger" style="font-size:.8rem"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="XacNhanMatKhau" class="form-label" style="font-size:.85rem; font-weight:600; color:#9e9e9e">XÁC NHẬN MẬT KHẨU</label>
+                    <input asp-for="XacNhanMatKhau" class="form-control form-control-cine" placeholder="Nhập lại mật khẩu" />
+                    <span asp-validation-for="XacNhanMatKhau" class="text-danger" style="font-size:.8rem"></span>
+                </div>
+
+                <button type="submit" class="btn-cine w-100" style="padding:.7rem">
+                    <i class="bi bi-person-plus-fill"></i> Tạo Tài Khoản
+                </button>
+            </form>
+
+            <hr style="border-color:#2a2a40; margin:1.25rem 0" />
+
+            <p class="text-center mb-0" style="font-size:.88rem; color:#9e9e9e">
+                Đã có tài khoản?
+                <a asp-controller="TaiKhoan" asp-action="DangNhap" style="color:#e50914; text-decoration:none; font-weight:600">
+                    Đăng Nhập
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

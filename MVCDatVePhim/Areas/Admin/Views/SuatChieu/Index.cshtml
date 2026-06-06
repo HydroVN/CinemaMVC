@@ -1,0 +1,80 @@
+@model List<MVCDatVePhim.Models.SuatChieu>
+@{
+    ViewData["Title"] = "Quản Lý Suất Chiếu";
+    ViewData["BreadcrumbParent"] = "Nội Dung";
+}
+
+<div class="admin-page-header">
+    <h1 class="admin-page-title">Quản Lý Suất Chiếu</h1>
+    <a class="btn-admin-primary" asp-area="Admin" asp-controller="SuatChieu" asp-action="TaoMoi">
+        <i class="bi bi-plus-circle me-1"></i> Thêm Suất Chiếu
+    </a>
+</div>
+
+<div class="admin-card">
+    <table class="table admin-table mb-0">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Phim</th>
+                <th>Rạp / Phòng</th>
+                <th>Thời Gian</th>
+                <th>Giá Vé</th>
+                <th>Trạng Thái</th>
+                <th>Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sc in Model)
+            {
+                <tr>
+                    <td>@sc.Id</td>
+                    <td style="font-weight:600; max-width:150px">@sc.Phim?.TenPhim</td>
+                    <td style="font-size:.82rem">
+                        <div>@sc.PhongChieu?.RapChieu?.TenRap</div>
+                        <div style="color:#7a7a9a">Phòng @sc.PhongChieu?.TenPhong</div>
+                    </td>
+                    <td style="font-size:.85rem">
+                        <div>@sc.ThoiGianBatDau.ToString("dd/MM/yyyy")</div>
+                        <div style="color:#f5c518">@sc.ThoiGianHienThi</div>
+                    </td>
+                    <td style="color:#f5c518">@sc.GiaVe.ToString("N0") ₫</td>
+                    <td>
+                        @if (sc.DangHoatDong)
+                        {
+                            <span class="badge badge-xacnhan">Hoạt Động</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-huy">Dừng</span>
+                        }
+                    </td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a class="btn btn-sm" style="background:rgba(79,195,247,.1); color:#4fc3f7; border-color:rgba(79,195,247,.2)"
+                               asp-area="Admin" asp-controller="SuatChieu" asp-action="ChinhSua" asp-route-id="@sc.Id">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form asp-area="Admin" asp-controller="SuatChieu" asp-action="Xoa"
+                                  asp-route-id="@sc.Id" method="post"
+                                  onsubmit="return confirm('Xoá suất chiếu này?')">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm"
+                                        style="background:rgba(229,9,20,.1); color:#e57373; border-color:rgba(229,9,20,.2)">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <div class="text-center py-4" style="color:#7a7a9a">
+            <i class="bi bi-calendar-x" style="font-size:2.5rem; display:block; margin-bottom:.5rem"></i>
+            Chưa có suất chiếu nào.
+        </div>
+    }
+</div>

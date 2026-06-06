@@ -1,0 +1,66 @@
+@model MVCDatVePhim.ViewModels.DangNhapViewModel
+@{
+    ViewData["Title"] = "Đăng Nhập";
+}
+
+<div style="min-height:80vh; display:flex; align-items:center; justify-content:center; padding:2rem">
+    <div style="width:100%; max-width:420px">
+
+        <div class="text-center mb-4">
+            <div style="font-size:2rem; font-weight:800; color:#e50914; margin-bottom:.25rem">
+                🎬 CineViet
+            </div>
+            <h1 style="font-size:1.5rem; font-weight:700">Đăng Nhập</h1>
+            <p class="text-muted-cine small">Chào mừng trở lại! Đăng nhập để đặt vé.</p>
+        </div>
+
+        <div class="cine-card">
+            <form asp-action="DangNhap" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="ReturnUrl" />
+
+                <div asp-validation-summary="ModelOnly" class="alert-cine mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label" style="font-size:.85rem; font-weight:600; color:#9e9e9e">EMAIL</label>
+                    <input asp-for="Email" class="form-control form-control-cine"
+                           placeholder="ten@example.com" autocomplete="email" />
+                    <span asp-validation-for="Email" class="text-danger" style="font-size:.8rem"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="MatKhau" class="form-label" style="font-size:.85rem; font-weight:600; color:#9e9e9e">MẬT KHẨU</label>
+                    <input asp-for="MatKhau" class="form-control form-control-cine"
+                           placeholder="Nhập mật khẩu" autocomplete="current-password" />
+                    <span asp-validation-for="MatKhau" class="text-danger" style="font-size:.8rem"></span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check" style="margin:0">
+                        <input class="form-check-input" asp-for="GhiNho"
+                               style="background:#12121a; border-color:#2a2a40" />
+                        <label class="form-check-label" asp-for="GhiNho"
+                               style="font-size:.85rem; color:#9e9e9e">Ghi nhớ đăng nhập</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-cine w-100" style="padding:.7rem">
+                    <i class="bi bi-box-arrow-in-right"></i> Đăng Nhập
+                </button>
+            </form>
+
+            <hr style="border-color:#2a2a40; margin:1.25rem 0" />
+
+            <p class="text-center mb-0" style="font-size:.88rem; color:#9e9e9e">
+                Chưa có tài khoản?
+                <a asp-controller="TaiKhoan" asp-action="DangKy" style="color:#e50914; text-decoration:none; font-weight:600">
+                    Đăng Ký Ngay
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

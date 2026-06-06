@@ -1,0 +1,158 @@
+@model List<MVCDatVePhim.Models.SuatChieu>
+@{
+    var phim = ViewBag.Phim as MVCDatVePhim.Models.Phim;
+    var ngayChon = (DateTime)ViewBag.NgayChon;
+    ViewData["Title"] = $"Lịch Chiếu Phim: {phim?.TenPhim}";
+    var today = DateTime.Today;
+}
+
+<div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+    <!-- Back Button -->
+    <a class="btn-outline-cine mb-4" asp-controller="Phim" asp-action="ChiTiet" asp-route-id="@phim?.Id">
+        <i class="bi bi-arrow-left"></i> Quay Lại Chi Tiết Phim
+    </a>
+
+    <!-- Movie Banner Header -->
+    <div class="position-relative overflow-hidden rounded mb-5 shadow-lg" style="background: var(--bg-secondary); border: 1px solid var(--border);">
+        <!-- Background Blur Image -->
+        <div class="position-absolute w-100 h-100" style="background-image: url('@phim?.UrlAnh'); background-size: cover; background-position: center; filter: blur(30px) brightness(0.25); z-index: 1;"></div>
+        
+        <div class="position-relative d-flex flex-column flex-md-row gap-4 p-4 p-lg-5 align-items-center" style="z-index: 2;">
+            <img src="@phim?.UrlAnh" 
+                 style="width: 140px; aspect-ratio: 2/3; object-fit: cover; border-radius: 8px; border: 2px solid var(--border);" 
+                 alt="@phim?.TenPhim" />
+            <div class="text-center text-md-start">
+                <span class="badge mb-2" style="background: rgba(229, 9, 20, 0.2); color: var(--accent-red); border: 1px solid rgba(229, 9, 20, 0.3);">
+                    @phim?.TheLoai.GetDisplayName()
+                </span>
+                <h1 class="display-6 fw-bold mb-2 text-white">@phim?.TenPhim</h1>
+                <p class="text-muted-cine mb-2" style="font-size: 0.95rem;">
+                    <i class="bi bi-clock me-1"></i> @phim?.ThoiLuong phút | 
+                    <i class="bi bi-chat-left-dots me-1"></i> @phim?.NgonNgu | 
+                    <span style="color: var(--accent-gold);">⭐ @phim?.DanhGia.ToString("F1")</span>
+                </p>
+                <p class="text-muted-cine mb-0" style="font-size: 0.88rem; max-width: 700px; line-height: 1.5;">@phim?.MoTa</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Date Selector (Left or Top) -->
+        <div class="col-12">
+            <h5 class="section-title mb-3">📅 Lịch Chiếu Theo Ngày</h5>
+            
+            <!-- Date Buttons Grid -->
+            <div class="d-flex gap-2 justify-content-start overflow-auto pb-2 scrollbar-none" style="scrollbar-width: none;">
+                @for (int i = 0; i < 7; i++)
+                {
+                    var d = today.AddDays(i);
+                    var activeClass = d.Date == ngayChon.Date ? "active-date" : "";
+                    
+                    <a asp-controller="SuatChieu" asp-action="TheoBo" asp-route-id="@phim?.Id" asp-route-ngay="@d.ToString("yyyy-MM-dd")" 
+                       class="date-card @activeClass text-decoration-none d-flex flex-column align-items-center justify-content-center p-2 px-3"
+                       style="min-width: 80px; border-radius: 10px; border: 1px solid var(--border); transition: all 0.2s ease;">
+                        <span class="day-name text-uppercase" style="font-size: 0.68rem; font-weight: 600;">
+                            @(i == 0 ? "Hôm nay" : d.ToString("dd/MM"))
+                        </span>
+                        <span class="day-number" style="font-size: 1.25rem; font-weight: 800;">@d.Day</span>
+                    </a>
+                }
+            </div>
+        </div>
+
+        <!-- Showtimes List -->
+        <div class="col-12 mt-4">
+            <div class="cine-card">
+                <h4 style="font-weight: 700; font-size: 1.15rem; margin-bottom: 1.5rem; color: #fff;">
+                    <i class="bi bi-ticket-detailed me-2 text-red"></i>Suất Chiếu Cho Ngày: <span style="color: var(--accent-gold);">@ngayChon.ToString("dd/MM/yyyy")</span>
+                </h4>
+
+                @if (!Model.Any())
+                {
+                    <div class="text-center py-5 text-muted-cine">
+                        <i class="bi bi-calendar-x" style="font-size: 3rem; display: block; margin-bottom: 1rem; color: var(--border);"></i>
+                        Rất tiếc, hiện không có suất chiếu nào hoạt động cho ngày này. Vui lòng chọn ngày khác.
+                    </div>
+                }
+                else
+                {
+                    @foreach (var rapGroup in Model.GroupBy(s => s.PhongChieu.RapChieu))
+                    {
+                        <div class="mb-4 pb-3" style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                            <!-- Cinema Header -->
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <i class="bi bi-building text-red" style="font-size: 1.25rem;"></i>
+                                <div>
+                                    <h5 class="fw-bold mb-0 text-white" style="font-size: 1.05rem;">@(rapGroup.Key?.TenRap ?? "N/A")</h5>
+                                    <span class="text-muted-cine" style="font-size: 0.78rem;">@rapGroup.Key?.DiaChi</span>
+                                </div>
+                            </div>
+
+                            <!-- Rooms Group -->
+                            @foreach (var phongGroup in rapGroup.GroupBy(s => s.PhongChieu))
+                            {
+                                <div class="d-flex flex-column flex-sm-row gap-3 py-2 align-items-start align-items-sm-center ps-4 mb-2">
+                                    <!-- Room Label -->
+                                    <div class="room-label px-3 py-1 text-center" style="min-width: 100px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); border-radius: 6px;">
+                                        <span style="font-weight: 600; font-size: 0.85rem; color: #4fc3f7;">Phòng @phongGroup.Key.TenPhong</span>
+                                    </div>
+
+                                    <!-- Showtimes Buttons -->
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach (var sc in phongGroup.OrderBy(s => s.ThoiGianBatDau))
+                                        {
+                                            <a asp-controller="DatVe" asp-action="ChonGhe" asp-route-id="@sc.Id" 
+                                               class="showtime-btn text-decoration-none d-flex flex-column align-items-center p-2 px-3"
+                                               style="min-width: 90px; border-radius: 8px; border: 1px solid var(--border); transition: all 0.2s ease;">
+                                                <span class="showtime-time" style="font-size: 1.05rem; font-weight: 700; color: #fff;">
+                                                    @sc.ThoiGianBatDau.ToString("HH:mm")
+                                                </span>
+                                                <span class="showtime-price" style="font-size: 0.72rem; color: var(--accent-gold); font-weight: 500;">
+                                                    @sc.GiaVe.ToString("N0") ₫
+                                                </span>
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Date Selector Styles */
+    .date-card {
+        background: var(--bg-secondary);
+        color: var(--text-muted);
+    }
+    .date-card:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--accent-red) !important;
+        color: #fff;
+    }
+    .active-date {
+        background: var(--accent-red) !important;
+        border-color: var(--accent-red) !important;
+        color: #fff !important;
+    }
+    .active-date .day-name {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+
+    /* Showtime Button Styles */
+    .showtime-btn {
+        background: rgba(255, 255, 255, 0.02);
+    }
+    .showtime-btn:hover {
+        background: rgba(229, 9, 20, 0.08);
+        border-color: var(--accent-red) !important;
+        transform: translateY(-2px);
+    }
+    .showtime-btn:hover .showtime-time {
+        color: var(--accent-red) !important;
+    }
+</style>

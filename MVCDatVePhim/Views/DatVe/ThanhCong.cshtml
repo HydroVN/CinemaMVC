@@ -1,0 +1,54 @@
+@model MVCDatVePhim.Models.DatVe
+@{
+    ViewData["Title"] = "Đặt Vé Thành Công";
+    var sc = Model.SuatChieu;
+}
+
+<div class="container text-center" style="padding-top:3rem; padding-bottom:3rem; max-width:580px">
+
+    <div class="success-icon">✓</div>
+
+    <h1 style="font-size:1.8rem; font-weight:800; margin-bottom:.5rem">Đặt Vé Thành Công! 🎉</h1>
+    <p style="color:#9e9e9e; margin-bottom:2rem">
+        Cảm ơn bạn đã đặt vé. Mã vé của bạn là:
+    </p>
+
+    <div class="booking-code mb-4">@Model.MaVe</div>
+
+    <div class="cine-card text-start mb-4">
+        <h6 style="font-weight:700; color:#9e9e9e; font-size:.8rem; text-transform:uppercase; letter-spacing:.06em; margin-bottom:1rem">
+            Chi Tiết Vé
+        </h6>
+        <div class="row g-2" style="font-size:.9rem">
+            <div class="col-5 text-muted-cine">Phim</div>
+            <div class="col-7 fw-semibold">@sc.Phim.TenPhim</div>
+            <div class="col-5 text-muted-cine">Ngày chiếu</div>
+            <div class="col-7">@sc.ThoiGianBatDau.ToString("dddd, dd/MM/yyyy")</div>
+            <div class="col-5 text-muted-cine">Giờ chiếu</div>
+            <div class="col-7">@sc.ThoiGianHienThi</div>
+            <div class="col-5 text-muted-cine">Rạp</div>
+            <div class="col-7">@sc.PhongChieu?.RapChieu?.TenRap</div>
+            <div class="col-5 text-muted-cine">Phòng</div>
+            <div class="col-7">@sc.PhongChieu?.TenPhong</div>
+            <div class="col-5 text-muted-cine">Ghế</div>
+            <div class="col-7 text-gold fw-bold">
+                @string.Join(", ", Model.ChiTietDatVes.Select(c => c.Ghe.NhanGhe))
+            </div>
+            <div class="col-5 text-muted-cine">Tổng tiền</div>
+            <div class="col-7 fw-bold" style="color:#f5c518">@Model.TongTien.ToString("N0") VNĐ</div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a class="btn-cine" asp-controller="DatVe" asp-action="VeCuaToi">
+            <i class="bi bi-ticket-perforated"></i> Xem Vé Của Tôi
+        </a>
+        <a class="btn-outline-cine" asp-controller="Home" asp-action="Index">
+            <i class="bi bi-house"></i> Về Trang Chủ
+        </a>
+    </div>
+
+    <p style="font-size:.78rem; color:#555; margin-top:2rem">
+        <i class="bi bi-bell"></i> Vui lòng đến rạp trước giờ chiếu 15 phút và xuất trình mã vé tại quầy.
+    </p>
+</div>

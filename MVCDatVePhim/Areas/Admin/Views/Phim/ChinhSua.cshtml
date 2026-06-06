@@ -1,0 +1,104 @@
+@model MVCDatVePhim.ViewModels.Admin.AdminPhimFormViewModel
+@{
+    ViewData["Title"] = "Chỉnh Sửa Phim";
+    ViewData["BreadcrumbParent"] = "Quản Lý Phim";
+}
+
+<div class="admin-page-header">
+    <h1 class="admin-page-title">Chỉnh Sửa: @Model.TenPhim</h1>
+    <a class="btn-admin-secondary" asp-area="Admin" asp-controller="Phim" asp-action="Index">
+        <i class="bi bi-arrow-left me-1"></i> Quay Lại
+    </a>
+</div>
+
+<form asp-action="ChinhSua" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="admin-card">
+                <h6 class="admin-form-label" style="color:#e8e8f0; font-size:.95rem; margin-bottom:1.25rem">Thông Tin Cơ Bản</h6>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label asp-for="TenPhim" class="admin-form-label"></label>
+                        <input asp-for="TenPhim" class="form-control admin-form-control" />
+                        <span asp-validation-for="TenPhim" class="text-danger" style="font-size:.8rem"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="TheLoai" class="admin-form-label"></label>
+                        <select asp-for="TheLoai" class="form-select admin-form-select"
+                                asp-items="Html.GetEnumSelectList<MVCDatVePhim.Models.TheLoaiPhim>()"></select>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="ThoiLuong" class="admin-form-label"></label>
+                        <input asp-for="ThoiLuong" class="form-control admin-form-control" />
+                        <span asp-validation-for="ThoiLuong" class="text-danger" style="font-size:.8rem"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="DanhGia" class="admin-form-label"></label>
+                        <input asp-for="DanhGia" class="form-control admin-form-control" step="0.1" min="0" max="10" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="DaoDien" class="admin-form-label"></label>
+                        <input asp-for="DaoDien" class="form-control admin-form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="NgonNgu" class="admin-form-label"></label>
+                        <input asp-for="NgonNgu" class="form-control admin-form-control" />
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="DienVien" class="admin-form-label"></label>
+                        <input asp-for="DienVien" class="form-control admin-form-control" />
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="MoTa" class="admin-form-label"></label>
+                        <textarea asp-for="MoTa" class="form-control admin-form-control" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="admin-card mb-3">
+                <h6 class="admin-form-label" style="color:#e8e8f0; margin-bottom:1rem">Ảnh & Trailer</h6>
+                <div class="mb-3">
+                    <label asp-for="UrlAnh" class="admin-form-label"></label>
+                    <input asp-for="UrlAnh" class="form-control admin-form-control" id="urlAnh" />
+                </div>
+                <div id="posterPreview" style="margin-bottom:1rem">
+                    <img id="previewImg" src="@Model.UrlAnh"
+                         style="width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:8px; border:1px solid #252535"
+                         alt="Poster" />
+                </div>
+                <div>
+                    <label asp-for="UrlTrailer" class="admin-form-label"></label>
+                    <input asp-for="UrlTrailer" class="form-control admin-form-control" />
+                </div>
+            </div>
+            <div class="admin-card">
+                <h6 class="admin-form-label" style="color:#e8e8f0; margin-bottom:1rem">Cài Đặt</h6>
+                <div class="mb-3">
+                    <label asp-for="NgayKhoiChieu" class="admin-form-label"></label>
+                    <input asp-for="NgayKhoiChieu" type="date" class="form-control admin-form-control" />
+                </div>
+                <div class="form-check">
+                    <input asp-for="DangChieu" class="form-check-input" />
+                    <label asp-for="DangChieu" class="form-check-label admin-form-label">Đang Chiếu</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn-admin-primary">
+                <i class="bi bi-floppy me-1"></i> Lưu Thay Đổi
+            </button>
+            <a asp-area="Admin" asp-controller="Phim" asp-action="Index" class="btn-admin-secondary ms-2">Huỷ</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        const urlInput = document.getElementById('urlAnh');
+        const img      = document.getElementById('previewImg');
+        urlInput?.addEventListener('input', () => { if (urlInput.value) img.src = urlInput.value; });
+    </script>
+}

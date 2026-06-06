@@ -1,0 +1,80 @@
+@model MVCDatVePhim.ViewModels.XacNhanDatVeViewModel
+@{
+    ViewData["Title"] = "Xác Nhận Đặt Vé";
+    var sc = Model.SuatChieu;
+}
+
+<div class="container" style="padding-top:2rem; padding-bottom:3rem; max-width:760px">
+    <h1 style="font-size:1.6rem; font-weight:800; margin-bottom:1.5rem">
+        <i class="bi bi-clipboard-check text-gold"></i> Xác Nhận Đặt Vé
+    </h1>
+
+    <!-- Thông tin suất chiếu -->
+    <div class="cine-card mb-3">
+        <h6 style="font-weight:700; color:#9e9e9e; font-size:.8rem; text-transform:uppercase; letter-spacing:.06em; margin-bottom:1rem">
+            Thông Tin Suất Chiếu
+        </h6>
+        <div class="row g-2" style="font-size:.9rem">
+            <div class="col-5 text-muted-cine">Phim</div>
+            <div class="col-7 fw-semibold">@sc.Phim.TenPhim</div>
+            <div class="col-5 text-muted-cine">Ngày chiếu</div>
+            <div class="col-7">@sc.ThoiGianBatDau.ToString("dddd, dd/MM/yyyy")</div>
+            <div class="col-5 text-muted-cine">Giờ chiếu</div>
+            <div class="col-7">@sc.ThoiGianHienThi</div>
+            <div class="col-5 text-muted-cine">Rạp chiếu</div>
+            <div class="col-7">@sc.PhongChieu?.RapChieu?.TenRap</div>
+            <div class="col-5 text-muted-cine">Phòng</div>
+            <div class="col-7">@sc.PhongChieu?.TenPhong</div>
+        </div>
+    </div>
+
+    <!-- Ghế đã chọn -->
+    <div class="cine-card mb-3">
+        <h6 style="font-weight:700; color:#9e9e9e; font-size:.8rem; text-transform:uppercase; letter-spacing:.06em; margin-bottom:1rem">
+            Ghế Đã Chọn
+        </h6>
+        @foreach (var ghe in Model.GheDaChon)
+        {
+            var gia = ghe.LoaiGhe == MVCDatVePhim.Models.LoaiGhe.VIP ? sc.GiaVe * 1.5m : sc.GiaVe;
+            <div class="booking-summary-row">
+                <span>
+                    Ghế <strong>@ghe.NhanGhe</strong>
+                    @if (ghe.LoaiGhe == MVCDatVePhim.Models.LoaiGhe.VIP)
+                    {
+                        <span class="badge ms-1" style="background:rgba(79,195,247,.15); color:#4fc3f7; font-size:.7rem">VIP</span>
+                    }
+                </span>
+                <span class="text-gold fw-semibold">@gia.ToString("N0") VNĐ</span>
+            </div>
+        }
+        <div class="booking-summary-total">
+            <span>Tổng Tiền</span>
+            <span>@Model.TongTien.ToString("N0") VNĐ</span>
+        </div>
+    </div>
+
+    <!-- Nút xác nhận -->
+    <form asp-controller="DatVe" asp-action="ThanhToan" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="suatChieuId" value="@sc.Id" />
+        @foreach (var gheId in Model.GheIds)
+        {
+            <input type="hidden" name="gheIds" value="@gheId" />
+        }
+
+        <div class="d-flex gap-3 flex-wrap">
+            <button type="submit" class="btn-cine">
+                <i class="bi bi-credit-card-fill"></i> Xác Nhận & Thanh Toán
+            </button>
+            <a asp-controller="DatVe" asp-action="ChonGhe" asp-route-id="@sc.Id"
+               class="btn-outline-cine">
+                <i class="bi bi-arrow-left"></i> Chọn Lại Ghế
+            </a>
+        </div>
+
+        <p style="font-size:.78rem; color:#666; margin-top:.75rem">
+            <i class="bi bi-info-circle"></i>
+            Bằng cách nhấn "Xác Nhận & Thanh Toán", bạn đồng ý với điều khoản sử dụng của CineViet.
+        </p>
+    </form>
+</div>

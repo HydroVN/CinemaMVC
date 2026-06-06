@@ -1,0 +1,205 @@
+@model MVCDatVePhim.Models.DatVe
+@{
+    ViewData["Title"] = $"Chi Tiết Vé {Model.MaVe}";
+    ViewData["BreadcrumbParent"] = "Giao Dịch";
+
+    var (bc, bt) = Model.TrangThai switch
+    {
+        MVCDatVePhim.Models.TrangThaiDatVe.DaXacNhan => ("badge-xacnhan", "Đã Xác Nhận"),
+        MVCDatVePhim.Models.TrangThaiDatVe.DaHuy     => ("badge-huy", "Đã Huỷ"),
+        _                                             => ("badge-cho", "Chờ Duyệt"),
+    };
+}
+
+<div class="admin-page-header">
+    <div>
+        <h1 class="admin-page-title">Chi Tiết Giao Dịch Vé</h1>
+        <p class="text-muted mb-0" style="font-size: .9rem;">Mã Vé: <code style="color: #4fc3f7;">@Model.MaVe</code> | Ngày Đặt: @Model.NgayDat.ToString("dd/MM/yyyy HH:mm")</p>
+    </div>
+    <a class="btn-admin-secondary" asp-area="Admin" asp-controller="Ve" asp-action="Index">
+        <i class="bi bi-arrow-left me-1"></i> Quay Lại
+    </a>
+</div>
+
+<div class="row g-4">
+    <!-- Left Column: Booking Info -->
+    <div class="col-md-7">
+        <div class="admin-card mb-4">
+            <h5 class="mb-3" style="color: var(--admin-accent); font-weight: 700;">
+                <i class="bi bi-ticket-perforated me-2"></i>Thông Tin Suất Chiếu & Phim
+            </h5>
+            
+            <div class="d-flex gap-3 mb-4">
+                <img src="@Model.SuatChieu?.Phim?.UrlAnh" 
+                     style="width: 80px; height: 112px; object-fit: cover; border-radius: 8px; border: 1px solid var(--admin-border);" 
+                     alt="@Model.SuatChieu?.Phim?.TenPhim" />
+                <div>
+                    <h4 style="font-weight: 700; color: #fff; margin-bottom: .25rem;">@Model.SuatChieu?.Phim?.TenPhim</h4>
+                    <p class="text-muted mb-1" style="font-size: .85rem;">
+                        <i class="bi bi-clock me-1"></i> @Model.SuatChieu?.Phim?.ThoiLuong phút | @Model.SuatChieu?.Phim?.NgonNgu
+                    </p>
+                    <p class="text-muted mb-0" style="font-size: .85rem;">
+                        <i class="bi bi-tag me-1"></i> Thể Loại: @Model.SuatChieu?.Phim?.TheLoai.GetDisplayName()
+                    </p>
+                </div>
+            </div>
+
+            <hr style="border-color: var(--admin-border);" />
+
+            <div class="row g-3 py-2">
+                <div class="col-6">
+                    <div class="text-muted mb-1" style="font-size: .8rem;">Rạp Chiếu</div>
+                    <div style="font-weight: 600;">@Model.SuatChieu?.PhongChieu?.RapChieu?.TenRap</div>
+                    <div class="text-muted" style="font-size: .8rem;">@Model.SuatChieu?.PhongChieu?.RapChieu?.DiaChi</div>
+                </div>
+                <div class="col-6">
+                    <div class="text-muted mb-1" style="font-size: .8rem;">Phòng Chiếu</div>
+                    <div style="font-weight: 600;"><i class="bi bi-door-open me-1"></i> @Model.SuatChieu?.PhongChieu?.TenPhong</div>
+                </div>
+                <div class="col-6">
+                    <div class="text-muted mb-1" style="font-size: .8rem;">Thời Gian Chiếu</div>
+                    <div style="font-weight: 600; color: #4fc3f7;">
+                        <i class="bi bi-calendar-event me-1"></i> @Model.SuatChieu?.ThoiGianBatDau.ToString("HH:mm, dd/MM/yyyy")
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="text-muted mb-1" style="font-size: .8rem;">Dự Kiến Kết Thúc</div>
+                    <div style="font-weight: 600;">
+                        @Model.SuatChieu?.ThoiGianKetThuc.ToString("HH:mm")
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-card">
+            <h5 class="mb-3" style="color: var(--admin-accent); font-weight: 700;">
+                <i class="bi bi-grid-3x3-gap me-2"></i>Danh Sách Ghế Đã Chọn (@Model.ChiTietDatVes.Count)
+            </h5>
+            
+            <table class="table admin-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Mã Ghế</th>
+                        <th>Hàng / Số</th>
+                        <th>Loại Ghế</th>
+                        <th class="text-end">Giá Vé</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ct in Model.ChiTietDatVes)
+                    {
+                        <tr>
+                            <td>
+                                <span style="font-weight: 700; color: @(ct.Ghe.LoaiGhe == MVCDatVePhim.Models.LoaiGhe.VIP ? "#ffb74d" : "#e8e8f0")">
+                                    @ct.Ghe.NhanGhe
+                                </span>
+                            </td>
+                            <td>Hàng @ct.Ghe.HangGhe, Số @ct.Ghe.SoGhe</td>
+                            <td>
+                                @if (ct.Ghe.LoaiGhe == MVCDatVePhim.Models.LoaiGhe.VIP)
+                                {
+                                    <span class="badge bg-warning text-dark" style="font-size: .75rem;">VIP</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary" style="font-size: .75rem;">Thường</span>
+                                }
+                            </td>
+                            <td class="text-end" style="font-weight: 600;">@ct.GiaVe.ToString("N0") ₫</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr style="border-top: 2px solid var(--admin-border);">
+                        <td colspan="3" class="text-end" style="font-weight: 700; font-size: 1rem;">Tổng Cộng:</td>
+                        <td class="text-end" style="font-weight: 800; font-size: 1.1rem; color: #f5c518;">@Model.TongTien.ToString("N0") ₫</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- Right Column: Customer & Status Info -->
+    <div class="col-md-5">
+        <div class="admin-card mb-4">
+            <h5 class="mb-3" style="color: var(--admin-accent); font-weight: 700;">
+                <i class="bi bi-person-circle me-2"></i>Thông Tin Khách Hàng
+            </h5>
+            <div class="py-2">
+                <div class="mb-3">
+                    <label class="text-muted mb-1" style="font-size: .8rem;">Họ và Tên</label>
+                    <div style="font-weight: 600; font-size: 1rem;">@Model.User?.HoTen</div>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted mb-1" style="font-size: .8rem;">Email Tài Khoản</label>
+                    <div><a href="mailto:@Model.User?.Email" style="color: #4fc3f7; text-decoration: none;">@Model.User?.Email</a></div>
+                </div>
+                <div>
+                    <label class="text-muted mb-1" style="font-size: .8rem;">Số Điện Thoại</label>
+                    <div>@(Model.User?.PhoneNumber ?? "Chưa cung cấp")</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-card">
+            <h5 class="mb-3" style="color: var(--admin-accent); font-weight: 700;">
+                <i class="bi bi-credit-card me-2"></i>Trạng Thái Giao Dịch
+            </h5>
+            <div class="py-2">
+                <div class="mb-3">
+                    <label class="text-muted mb-1" style="font-size: .8rem;">Trạng Thái Hiện Tại</label>
+                    <div>
+                        <span class="badge @bc" style="font-size: .9rem; padding: .4rem .8rem;">@bt</span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted mb-1" style="font-size: .8rem;">Phương Thức Thanh Toán</label>
+                    <div style="font-weight: 600;"><i class="bi bi-wallet2 me-1"></i> Thanh toán tại quầy / Trực tuyến</div>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted mb-2" style="font-size: .8rem; display: block;">Cập Nhật Trạng Thái (Admin)</label>
+                    <div class="d-flex flex-wrap gap-2">
+                        @if (Model.TrangThai == MVCDatVePhim.Models.TrangThaiDatVe.ChoDuyet)
+                        {
+                            <form asp-area="Admin" asp-controller="Ve" asp-action="CapNhatTrangThai" method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <input type="hidden" name="trangThai" value="@MVCDatVePhim.Models.TrangThaiDatVe.DaXacNhan" />
+                                <button type="submit" class="btn btn-sm btn-success" style="font-size: 0.8rem; font-weight: 600;">
+                                    <i class="bi bi-check-circle me-1"></i>Đã Thanh Toán
+                                </button>
+                            </form>
+                            <form asp-area="Admin" asp-controller="Ve" asp-action="CapNhatTrangThai" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn huỷ vé này?')">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <input type="hidden" name="trangThai" value="@MVCDatVePhim.Models.TrangThaiDatVe.DaHuy" />
+                                <button type="submit" class="btn btn-sm btn-danger" style="font-size: 0.8rem; font-weight: 600;">
+                                    <i class="bi bi-x-circle me-1"></i>Huỷ Vé
+                                </button>
+                            </form>
+                        }
+                        else if (Model.TrangThai == MVCDatVePhim.Models.TrangThaiDatVe.DaXacNhan)
+                        {
+                            <form asp-area="Admin" asp-controller="Ve" asp-action="CapNhatTrangThai" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn huỷ vé này?')">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <input type="hidden" name="trangThai" value="@MVCDatVePhim.Models.TrangThaiDatVe.DaHuy" />
+                                <button type="submit" class="btn btn-sm btn-danger" style="font-size: 0.8rem; font-weight: 600;">
+                                    <i class="bi bi-x-circle me-1"></i>Huỷ Vé
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>Vé đã huỷ, không thể cập nhật</span>
+                        }
+                    </div>
+                </div>
+                <div class="alert alert-warning border-0 mb-0" style="background: rgba(245, 197, 24, 0.08); color: #ffe082; border-radius: 8px; font-size: .8rem;">
+                    <i class="bi bi-shield-lock me-1"></i>
+                    Thông tin giao dịch này được bảo mật và lưu trữ trong lịch sử vé đặt của hệ thống CineViet.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

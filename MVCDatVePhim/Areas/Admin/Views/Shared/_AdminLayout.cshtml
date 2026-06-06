@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@(ViewData["Title"] != null ? ViewData["Title"] + " — Quản Trị CineViet" : "Quản Trị CineViet")</title>
+
+    <!-- Bootstrap 5 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Admin CSS -->
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body class="admin-body">
+
+<div class="admin-wrapper">
+
+    <!-- ── Sidebar ─────────────────────────────────────── -->
+    <aside class="admin-sidebar">
+        <a class="sidebar-brand" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+            🎬 CineViet
+            <span>Bảng Quản Trị</span>
+        </a>
+
+        <nav class="sidebar-nav">
+            <div class="sidebar-section-label">Tổng Quan</div>
+            <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")"
+               asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                <i class="bi bi-speedometer2"></i> Tổng Quan
+            </a>
+
+            <div class="sidebar-section-label" style="margin-top:.75rem">Nội Dung</div>
+            <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Phim" ? "active" : "")"
+               asp-area="Admin" asp-controller="Phim" asp-action="Index">
+                <i class="bi bi-film"></i> Quản Lý Phim
+            </a>
+            <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "SuatChieu" ? "active" : "")"
+               asp-area="Admin" asp-controller="SuatChieu" asp-action="Index">
+                <i class="bi bi-calendar3"></i> Suất Chiếu
+            </a>
+            <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "RapChieu" ? "active" : "")"
+               asp-area="Admin" asp-controller="RapChieu" asp-action="Index">
+                <i class="bi bi-building"></i> Rạp Chiếu
+            </a>
+
+            <div class="sidebar-section-label" style="margin-top:.75rem">Giao Dịch</div>
+            <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Ve" ? "active" : "")"
+               asp-area="Admin" asp-controller="Ve" asp-action="Index">
+                <i class="bi bi-ticket-perforated"></i> Quản Lý Vé
+            </a>
+
+            <div class="sidebar-section-label" style="margin-top:.75rem">Hệ Thống</div>
+            <a class="sidebar-link" asp-area="" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-house-door-fill"></i> Xem Website
+            </a>
+        </nav>
+
+        <!-- User info at bottom -->
+        <div style="padding:1rem; border-top:1px solid #252535; margin-top:auto">
+            <div style="font-size:.8rem; color:#7a7a9a; margin-bottom:.5rem">
+                <i class="bi bi-person-badge"></i> @User.Identity?.Name?.Split('@')[0]
+            </div>
+            <form asp-area="" asp-controller="TaiKhoan" asp-action="DangXuat" method="post">
+                <button type="submit"
+                        style="background:rgba(229,9,20,.1); border:1px solid rgba(229,9,20,.3);
+                               color:#e57373; border-radius:6px; padding:.35rem .75rem;
+                               font-size:.8rem; width:100%; cursor:pointer; transition:.2s">
+                    <i class="bi bi-box-arrow-left"></i> Đăng Xuất
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- ── Main ───────────────────────────────────────── -->
+    <div class="admin-main">
+        <!-- Topbar -->
+        <div class="admin-topbar">
+            <div class="admin-breadcrumb">
+                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Trang Chủ</a>
+                @if (ViewData["BreadcrumbParent"] != null)
+                {
+                    <span class="mx-2" style="color:#3a3a5a">/</span>
+                    @ViewData["BreadcrumbParent"]
+                }
+                @if (ViewData["Title"] != null)
+                {
+                    <span class="mx-2" style="color:#3a3a5a">/</span>
+                    <span style="color:#e8e8f0">@ViewData["Title"]</span>
+                }
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-sm" 
+                   style="border: 1px solid rgba(255,255,255,0.15); font-size: 0.8rem; color: var(--admin-text); padding: 0.25rem 0.65rem;">
+                    <i class="bi bi-house-door me-1"></i>Về Trang Chủ Web
+                </a>
+                <div style="font-size:.82rem; color:#7a7a9a">
+                    <i class="bi bi-clock"></i>
+                    @DateTime.Now.ToString("HH:mm — dd/MM/yyyy")
+                </div>
+            </div>
+        </div>
+
+        <!-- TempData alert -->
+        @if (TempData["ThongBao"] != null)
+        {
+            <div style="padding:.75rem 1.75rem 0">
+                <div class="alert alert-success" style="background:rgba(76,175,80,.12); border:1px solid rgba(76,175,80,.3); color:#81c784; border-radius:10px; font-size:.88rem">
+                    <i class="bi bi-check-circle-fill me-2"></i>@TempData["ThongBao"]
+                </div>
+            </div>
+        }
+
+        <!-- Content -->
+        <div class="admin-content">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

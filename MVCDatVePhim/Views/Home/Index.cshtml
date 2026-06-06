@@ -1,0 +1,137 @@
+@{
+    ViewData["Title"] = "Trang Chủ";
+    var dangChieu = ViewBag.DangChieu as List<MVCDatVePhim.Models.Phim> ?? new();
+    var sapChieu  = ViewBag.SapChieu  as List<MVCDatVePhim.Models.Phim> ?? new();
+    var featured  = dangChieu.FirstOrDefault();
+}
+
+<!-- ── Hero Banner ─────────────────────────────────────── -->
+@if (featured != null)
+{
+    <div class="hero">
+        <div class="hero-bg" style="background-image:url('@featured.UrlAnh')"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <span class="hero-badge">🔥 Đang Chiếu</span>
+            <h1 class="hero-title">@featured.TenPhim</h1>
+            <div class="hero-meta">
+                <span><i class="bi bi-star-fill text-gold"></i> @featured.DanhGia.ToString("F1")/10</span>
+                <span><i class="bi bi-clock"></i> @featured.ThoiLuong phút</span>
+                <span><i class="bi bi-tag"></i> @featured.TheLoai</span>
+                <span><i class="bi bi-translate"></i> @featured.NgonNgu</span>
+            </div>
+            <p style="color:#ccc; font-size:.92rem; max-width:500px; margin-bottom:1.25rem; line-height:1.6">
+                @(featured.MoTa.Length > 180 ? featured.MoTa.Substring(0, 180) + "..." : featured.MoTa)
+            </p>
+            <div class="d-flex gap-3 flex-wrap">
+                <a class="btn-cine" asp-controller="SuatChieu" asp-action="TheoBo" asp-route-id="@featured.Id">
+                    <i class="bi bi-ticket-perforated-fill"></i> Đặt Vé Ngay
+                </a>
+                <a class="btn-outline-cine" asp-controller="Phim" asp-action="ChiTiet" asp-route-id="@featured.Id">
+                    <i class="bi bi-info-circle"></i> Chi Tiết
+                </a>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="container" style="margin-top:3rem">
+
+    <!-- ── Phim Đang Chiếu ─────────────────────────────── -->
+    <div class="section-title">Phim Đang Chiếu</div>
+    @if (dangChieu.Any())
+    {
+        <div class="row g-3 mb-5">
+            @foreach (var phim in dangChieu.Take(8))
+            {
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <a asp-controller="Phim" asp-action="ChiTiet" asp-route-id="@phim.Id"
+                       class="text-decoration-none d-block h-100">
+                        <div class="movie-card">
+                            <img class="movie-card-img"
+                                 src="@(string.IsNullOrEmpty(phim.UrlAnh) ? "https://via.placeholder.com/200x300/1a1a2e/666?text=Poster" : phim.UrlAnh)"
+                                 alt="@phim.TenPhim" loading="lazy" />
+                            <div class="movie-card-body">
+                                <div class="movie-card-title">@phim.TenPhim</div>
+                                <div class="movie-card-meta">
+                                    <span>@phim.ThoiLuong' phút</span>
+                                    <span class="rating-badge">⭐ @phim.DanhGia.ToString("F1")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+        <div class="text-center mb-5">
+            <a class="btn-outline-cine" asp-controller="Phim" asp-action="Index">
+                Xem Tất Cả Phim <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="alert-cine mb-4">
+            <i class="bi bi-info-circle"></i> Chưa có phim đang chiếu.
+        </div>
+    }
+
+    <!-- ── Phim Sắp Chiếu ─────────────────────────────── -->
+    @if (sapChieu.Any())
+    {
+        <div class="section-title">Phim Sắp Chiếu</div>
+        <div class="row g-3 mb-5">
+            @foreach (var phim in sapChieu.Take(6))
+            {
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <a asp-controller="Phim" asp-action="ChiTiet" asp-route-id="@phim.Id"
+                       class="text-decoration-none d-block h-100">
+                        <div class="movie-card" style="opacity:.85">
+                            <div style="position:relative">
+                                <img class="movie-card-img"
+                                     src="@(string.IsNullOrEmpty(phim.UrlAnh) ? "https://via.placeholder.com/200x300/1a1a2e/666?text=Sắp+Ra+Mắt" : phim.UrlAnh)"
+                                     alt="@phim.TenPhim" loading="lazy" />
+                                <div style="position:absolute;top:.5rem;left:.5rem;
+                                            background:#f5c518;color:#000;font-size:.65rem;
+                                            font-weight:700;padding:.15rem .5rem;border-radius:20px">
+                                    @phim.NgayKhoiChieu.ToString("dd/MM/yyyy")
+                                </div>
+                            </div>
+                            <div class="movie-card-body">
+                                <div class="movie-card-title">@phim.TenPhim</div>
+                                <div class="movie-card-meta">
+                                    <span style="color:#f5c518">Sắp chiếu</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- ── Tại Sao Chọn CineViet ──────────────────────── -->
+    <div class="section-title">Tại Sao Chọn CineViet?</div>
+    <div class="row g-4 mb-5">
+        @{
+            var features = new[]
+            {
+                ("bi-lightning-charge-fill", "#e50914", "Đặt Vé Siêu Nhanh", "Chỉ 3 bước đơn giản, đặt vé trong vòng 60 giây"),
+                ("bi-shield-check-fill",     "#81c784", "Thanh Toán An Toàn", "Bảo mật SSL, đa dạng phương thức thanh toán"),
+                ("bi-ticket-perforated-fill","#f5c518", "Vé Điện Tử",         "Nhận vé ngay trên điện thoại, không cần in ấn"),
+                ("bi-headset",               "#4fc3f7", "Hỗ Trợ 24/7",        "Đội ngũ hỗ trợ sẵn sàng giải quyết mọi thắc mắc"),
+            };
+        }
+        @foreach (var (icon, color, title, desc) in features)
+        {
+            <div class="col-sm-6 col-lg-3">
+                <div class="cine-card text-center" style="height:100%">
+                    <i class="bi @icon" style="font-size:2.2rem; color:@color; margin-bottom:.75rem; display:block"></i>
+                    <h6 style="font-weight:700; margin-bottom:.4rem">@title</h6>
+                    <p style="color:#9e9e9e; font-size:.85rem; margin:0">@desc</p>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
