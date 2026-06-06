@@ -173,6 +173,14 @@ CREATE TABLE Booking_Items (
 );
 GO
 
+-- Bảng lịch sử Migration của EF Core để tránh xung đột khi chạy ứng dụng
+CREATE TABLE __EFMigrationsHistory (
+    MigrationId NVARCHAR(150) NOT NULL,
+    ProductVersion NVARCHAR(32) NOT NULL,
+    CONSTRAINT PK___EFMigrationsHistory PRIMARY KEY (MigrationId)
+);
+GO
+
 -- ============================================================
 -- 3. CHÈN DỮ LIỆU MẪU (SEED DATA)
 -- ============================================================
@@ -295,4 +303,8 @@ INSERT INTO Booking_Items (Booking_Id, Ghe_Id, Price)
 VALUES 
 (1, 1, 90000), -- Ghế A1
 (1, 2, 90000); -- Ghế A2
+
+-- Ghi nhận Migration đã được áp dụng từ script SQL (ID tương ứng với class KhoiTao mới)
+INSERT INTO __EFMigrationsHistory (MigrationId, ProductVersion)
+VALUES ('20260606095839_KhoiTao', '10.0.8');
 GO

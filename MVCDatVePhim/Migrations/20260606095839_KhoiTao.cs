@@ -52,27 +52,27 @@ namespace MVCDatVePhim.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Phims",
+                name: "Movies",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TenPhim = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MoTa = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TheLoai = table.Column<int>(type: "int", nullable: false),
-                    ThoiLuong = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Genre_Id = table.Column<int>(type: "int", nullable: false),
+                    Duration = table.Column<int>(type: "int", nullable: false),
                     DanhGia = table.Column<double>(type: "float", nullable: false),
-                    UrlAnh = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Image_URL = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UrlTrailer = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NgayKhoiChieu = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DangChieu = table.Column<bool>(type: "bit", nullable: false),
+                    Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
                     DaoDien = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DienVien = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NgonNgu = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Phims", x => x.Id);
+                    table.PrimaryKey("PK_Movies", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -242,29 +242,29 @@ namespace MVCDatVePhim.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SuatChieus",
+                name: "Showtimes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PhimId = table.Column<int>(type: "int", nullable: false),
+                    Movie_Id = table.Column<int>(type: "int", nullable: false),
                     PhongChieuId = table.Column<int>(type: "int", nullable: false),
-                    ThoiGianBatDau = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ThoiGianKetThuc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    GiaVe = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Start_Time = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    End_Time = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Ticket_Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     DangHoatDong = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SuatChieus", x => x.Id);
+                    table.PrimaryKey("PK_Showtimes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SuatChieus_Phims_PhimId",
-                        column: x => x.PhimId,
-                        principalTable: "Phims",
+                        name: "FK_Showtimes_Movies_Movie_Id",
+                        column: x => x.Movie_Id,
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SuatChieus_PhongChieus_PhongChieuId",
+                        name: "FK_Showtimes_PhongChieus_PhongChieuId",
                         column: x => x.PhongChieuId,
                         principalTable: "PhongChieus",
                         principalColumn: "Id",
@@ -272,57 +272,57 @@ namespace MVCDatVePhim.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DatVes",
+                name: "Bookings",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     SuatChieuId = table.Column<int>(type: "int", nullable: false),
-                    NgayDat = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TongTien = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TrangThai = table.Column<int>(type: "int", nullable: false),
+                    Booking_Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Total_Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     MaVe = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DatVes", x => x.Id);
+                    table.PrimaryKey("PK_Bookings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DatVes_AspNetUsers_UserId",
+                        name: "FK_Bookings_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_DatVes_SuatChieus_SuatChieuId",
+                        name: "FK_Bookings_Showtimes_SuatChieuId",
                         column: x => x.SuatChieuId,
-                        principalTable: "SuatChieus",
+                        principalTable: "Showtimes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ChiTietDatVes",
+                name: "Booking_Items",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DatVeId = table.Column<int>(type: "int", nullable: false),
-                    GheId = table.Column<int>(type: "int", nullable: false),
-                    GiaVe = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Booking_Id = table.Column<int>(type: "int", nullable: false),
+                    Ghe_Id = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ChiTietDatVes", x => x.Id);
+                    table.PrimaryKey("PK_Booking_Items", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ChiTietDatVes_DatVes_DatVeId",
-                        column: x => x.DatVeId,
-                        principalTable: "DatVes",
+                        name: "FK_Booking_Items_Bookings_Booking_Id",
+                        column: x => x.Booking_Id,
+                        principalTable: "Bookings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ChiTietDatVes_Ghes_GheId",
-                        column: x => x.GheId,
+                        name: "FK_Booking_Items_Ghes_Ghe_Id",
+                        column: x => x.Ghe_Id,
                         principalTable: "Ghes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -368,23 +368,23 @@ namespace MVCDatVePhim.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ChiTietDatVes_DatVeId",
-                table: "ChiTietDatVes",
-                column: "DatVeId");
+                name: "IX_Booking_Items_Booking_Id",
+                table: "Booking_Items",
+                column: "Booking_Id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ChiTietDatVes_GheId",
-                table: "ChiTietDatVes",
-                column: "GheId");
+                name: "IX_Booking_Items_Ghe_Id",
+                table: "Booking_Items",
+                column: "Ghe_Id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DatVes_SuatChieuId",
-                table: "DatVes",
+                name: "IX_Bookings_SuatChieuId",
+                table: "Bookings",
                 column: "SuatChieuId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DatVes_UserId",
-                table: "DatVes",
+                name: "IX_Bookings_UserId",
+                table: "Bookings",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -399,13 +399,13 @@ namespace MVCDatVePhim.Migrations
                 column: "RapChieuId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SuatChieus_PhimId",
-                table: "SuatChieus",
-                column: "PhimId");
+                name: "IX_Showtimes_Movie_Id",
+                table: "Showtimes",
+                column: "Movie_Id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SuatChieus_PhongChieuId",
-                table: "SuatChieus",
+                name: "IX_Showtimes_PhongChieuId",
+                table: "Showtimes",
                 column: "PhongChieuId");
         }
 
@@ -428,13 +428,13 @@ namespace MVCDatVePhim.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ChiTietDatVes");
+                name: "Booking_Items");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "DatVes");
+                name: "Bookings");
 
             migrationBuilder.DropTable(
                 name: "Ghes");
@@ -443,10 +443,10 @@ namespace MVCDatVePhim.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "SuatChieus");
+                name: "Showtimes");
 
             migrationBuilder.DropTable(
-                name: "Phims");
+                name: "Movies");
 
             migrationBuilder.DropTable(
                 name: "PhongChieus");

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MVCDatVePhim.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260606085753_KhoiTao")]
+    [Migration("20260606095839_KhoiTao")]
     partial class KhoiTao
     {
         /// <inheritdoc />
@@ -103,13 +103,16 @@ namespace MVCDatVePhim.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("DatVeId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Booking_Id");
 
                     b.Property<int>("GheId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Ghe_Id");
 
                     b.Property<decimal>("GiaVe")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("Price");
 
                     b.HasKey("Id");
 
@@ -117,7 +120,7 @@ namespace MVCDatVePhim.Migrations
 
                     b.HasIndex("GheId");
 
-                    b.ToTable("ChiTietDatVes");
+                    b.ToTable("Booking_Items", (string)null);
                 });
 
             modelBuilder.Entity("MVCDatVePhim.Models.DatVe", b =>
@@ -133,16 +136,19 @@ namespace MVCDatVePhim.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("NgayDat")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("Booking_Date");
 
                     b.Property<int>("SuatChieuId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("TongTien")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("Total_Price");
 
                     b.Property<int>("TrangThai")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Status");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -154,7 +160,7 @@ namespace MVCDatVePhim.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DatVes");
+                    b.ToTable("Bookings", (string)null);
                 });
 
             modelBuilder.Entity("MVCDatVePhim.Models.Ghe", b =>
@@ -195,7 +201,8 @@ namespace MVCDatVePhim.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("DangChieu")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("Status");
 
                     b.Property<double>("DanhGia")
                         .HasColumnType("float");
@@ -210,10 +217,12 @@ namespace MVCDatVePhim.Migrations
 
                     b.Property<string>("MoTa")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Description");
 
                     b.Property<DateTime>("NgayKhoiChieu")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("Created_At");
 
                     b.Property<string>("NgonNgu")
                         .IsRequired()
@@ -221,24 +230,28 @@ namespace MVCDatVePhim.Migrations
 
                     b.Property<string>("TenPhim")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Title");
 
                     b.Property<int>("TheLoai")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Genre_Id");
 
                     b.Property<int>("ThoiLuong")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Duration");
 
                     b.Property<string>("UrlAnh")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Image_URL");
 
                     b.Property<string>("UrlTrailer")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Phims");
+                    b.ToTable("Movies", (string)null);
                 });
 
             modelBuilder.Entity("MVCDatVePhim.Models.PhongChieu", b =>
@@ -309,19 +322,23 @@ namespace MVCDatVePhim.Migrations
                         .HasColumnType("bit");
 
                     b.Property<decimal>("GiaVe")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("Ticket_Price");
 
                     b.Property<int>("PhimId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Movie_Id");
 
                     b.Property<int>("PhongChieuId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ThoiGianBatDau")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("Start_Time");
 
                     b.Property<DateTime>("ThoiGianKetThuc")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("End_Time");
 
                     b.HasKey("Id");
 
@@ -329,7 +346,7 @@ namespace MVCDatVePhim.Migrations
 
                     b.HasIndex("PhongChieuId");
 
-                    b.ToTable("SuatChieus");
+                    b.ToTable("Showtimes", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
